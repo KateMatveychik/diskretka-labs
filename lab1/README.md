@@ -61,4 +61,4 @@
 
 ### 1. Запуск программы
 ```bash
-python fano_coder.py
+python fano_code.py
