@@ -297,7 +297,7 @@ def main():
     """Главная функция программы"""
     global codes_dict, probabilities_list, reverse_codes_dict
 
-    print("🐍 АЛГОРИТМ ФАНО (по слайдам) 🐍")
+    print("АЛГОРИТМ ФАНО")
     print("=" * 50)
 
     while True:
