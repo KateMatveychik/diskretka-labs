@@ -225,14 +225,15 @@ def read_file(filename):
         for encoding in encodings:
             try:
                 with open(filename, 'r', encoding=encoding) as f:
-                    return f.read()
+                    content =  f.read()
+                return content
             except UnicodeDecodeError:
                 continue
         print(f"Не удалось прочитать файл {filename}")
-        return None
+        return ""
     except Exception as e:
         print(f"Ошибка при чтении файла: {e}")
-        return None
+        return ""
 
 
 def write_file(filename, content):
@@ -312,7 +313,14 @@ def main():
         if choice == '1':
             filename = input("Введите имя файла для кодирования: ").strip()
             text = read_file(filename)
-            if not text:
+            #if not text:
+                #continue
+
+            # Добавляем проверку на пустой файл
+            if text is None:
+                continue
+            elif text == "":
+                print("❌ Файл пустой! Кодирование невозможно.")
                 continue
 
             # Инициализируем глобальные переменные
