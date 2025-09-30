@@ -349,11 +349,10 @@ def main():
                         print(f"  - {file}")
                 continue  # возвращаемся в меню
 
-            # Пробуем найти файл кодов автоматически
+                # Пробуем найти файл кодов автоматически
             codes_file = get_file_path(bin_file, "_codes.json")
 
             if not os.path.exists(codes_file):
-                print(f"❌ Файл с кодами {codes_file} не найден!")
                 print("Доступные файлы с кодами:")
                 for file in os.listdir():
                     if file.endswith('_codes.json'):
