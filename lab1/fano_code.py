@@ -61,56 +61,55 @@ def Med(b, e):
     best_diff = float('inf')
     best_index = b
 
+
     for i in range(b, e + 1):
         left_sum += probabilities_list[i][1]
         right_sum = total - left_sum
         current_diff = abs(left_sum - right_sum)
 
-        if current_diff < best_diff:
+        print(
+            f"  i={i} ({probabilities_list[i][0]}): left={left_sum:.3f}, right={right_sum:.3f}, diff={current_diff:.3f}")
+
+        if current_diff < best_diff - 1e-10:
             best_diff = current_diff
             best_index = i
+            print(f"    ← НОВЫЙ ЛУЧШИЙ индекс: {best_index}")
+
         else:
-            # Когда разница начинает увеличиваться - останавливаемся
             break
+
+    print(f"  РЕЗУЛЬТАТ: разделить после индекса {best_index} ({probabilities_list[best_index][0]})")
 
     return best_index
 
 
-def Fano(b, e, k=0):
+
+def Fano(b, e, current_code=""):
     """
-    Рекурсивная процедура Fano из слайдов
-    Вход: b - начало, e - конец части массива P, k - длина уже построенных кодов
+    ИСПРАВЛЕННАЯ ВЕРСИЯ - правильный алгоритм Фано
     """
     global codes_dict, probabilities_list
 
-    if e <= b:
+    if e < b:
         return
 
-    current_k = k + 1
+    if e == b:
+        # Один символ - присваиваем текущий код
+        char = probabilities_list[b][0]
+        codes_dict[char] = current_code
+        return
+
+    # Находим точку разделения
     m = Med(b, e)
 
-    # Добавляем биты к кодам
-    for i in range(b, e + 1):
-        char = probabilities_list[i][0]
-        if char not in codes_dict:
-            codes_dict[char] = ""
+    # Левая часть получает '0'
+    left_code = current_code + "0"
+    # Правая часть получает '1'
+    right_code = current_code + "1"
 
-        # Убедимся что длина кода соответствует текущему уровню
-        while len(codes_dict[char]) < current_k:
-            codes_dict[char] += "0"  # временно добавляем нули
-
-        if i > m:
-            # Заменяем последний бит на 1 для второй группы
-            codes_dict[char] = codes_dict[char][:current_k - 1] + "1"
-        else:
-            # Заменяем последний бит на 0 для первой группы
-            codes_dict[char] = codes_dict[char][:current_k - 1] + "0"
-
-    # Рекурсивно обрабатываем подгруппы
-    if m > b:
-        Fano(b, m, current_k)
-    if e > m:
-        Fano(m + 1, e, current_k)
+    # Рекурсивно обрабатываем обе части
+    Fano(b, m, left_code)
+    Fano(m + 1, e, right_code)
 
 def encode_text(text):
     """Кодирует текст используя коды Фано"""
@@ -329,7 +328,7 @@ def main():
             probabilities_list = calculate_frequencies(text)
 
             print("Строим коды Фано...")
-            Fano(0, len(probabilities_list) - 1, 0)  # запускаем алгоритм Фано
+            Fano(0, len(probabilities_list) - 1, "") # запускаем алгоритм Фано
 
             print_codes_table()
             encoded = encode_text(text)
