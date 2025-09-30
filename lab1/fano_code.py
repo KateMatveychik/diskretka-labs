@@ -39,68 +39,61 @@ def calculate_frequencies(text):
 
 
 
-def Med(b, e):
+def Med(start, stop):
 
     """
         Функция Med - находит индекс медианы
-        Вход: b - начало части массива P, e - конец части массива P
+        Вход: start - начало части массива P, stop - конец части массива P
         Выход: m - индекс медианы
     """
     global probabilities_list
 
-    if e <= b:
-        return b
+    if stop <= start:
+        return start
 
     # Вычисляем общую сумму
     total = 0.0
-    for i in range(b, e + 1):
+    for i in range(start, stop + 1):
         total += probabilities_list[i][1]
 
     # Ищем оптимальное разделение
     left_sum = 0.0
     best_diff = float('inf')
-    best_index = b
+    best_index = start
 
-
-    for i in range(b, e + 1):
+    for i in range(start, stop + 1):
         left_sum += probabilities_list[i][1]
         right_sum = total - left_sum
         current_diff = abs(left_sum - right_sum)
 
-        print(
-            f"  i={i} ({probabilities_list[i][0]}): left={left_sum:.3f}, right={right_sum:.3f}, diff={current_diff:.3f}")
-
         if current_diff < best_diff - 1e-10:
             best_diff = current_diff
             best_index = i
-            print(f"    ← НОВЫЙ ЛУЧШИЙ индекс: {best_index}")
-
         else:
+            # Когда разница начинает увеличиваться - останавливаемся
             break
-
-    print(f"  РЕЗУЛЬТАТ: разделить после индекса {best_index} ({probabilities_list[best_index][0]})")
 
     return best_index
 
 
 
-def Fano(b, e, current_code=""):
+def Fano(start, stop, current_code=""):
     """
     ИСПРАВЛЕННАЯ ВЕРСИЯ - правильный алгоритм Фано
     """
     global codes_dict, probabilities_list
 
-    if e < b:
+    if stop < start:
         return
 
-    if e == b:
+    if stop == start:
         # Один символ - присваиваем текущий код
-        char = probabilities_list[b][0]
+        char = probabilities_list[start][0]
         codes_dict[char] = current_code
         return
 
     # Находим точку разделения
-    m = Med(b, e)
+    m = Med(start, stop)
 
     # Левая часть получает '0'
     left_code = current_code + "0"
@@ -108,8 +101,8 @@ def Fano(b, e, current_code=""):
     right_code = current_code + "1"
 
     # Рекурсивно обрабатываем обе части
-    Fano(b, m, left_code)
-    Fano(m + 1, e, right_code)
+    Fano(start, m, left_code)
+    Fano(m + 1, stop, right_code)
 
 def encode_text(text):
     """Кодирует текст используя коды Фано"""
@@ -160,7 +153,7 @@ def print_codes_table():
         return
 
     print("\n" + "=" * 60)
-    print("ТАБЛИЦА КОДОВ ФАНО (по алгоритму со слайдов)")
+    print("ТАБЛИЦА КОДОВ ФАНО")
     print("=" * 60)
     print("Символ  |  Вероятность  | Код         | Длина")
     print("-" * 60)
