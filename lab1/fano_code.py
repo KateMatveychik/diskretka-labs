@@ -86,10 +86,12 @@ def Fano(start, stop, current_code=""):
     if stop < start:
         return
 
-    if stop == start:
-        # Один символ - присваиваем текущий код
+
+    if start == stop:
+        # Базовый случай: один символ - присваиваем код!
         char = probabilities_list[start][0]
-        codes_dict[char] = current_code
+        codes_dict[char] = current_code if current_code else "0"
+        print(f"📌 Символу '{char}' присвоен код: {codes_dict[char]}")
         return
 
     # Находим точку разделения
