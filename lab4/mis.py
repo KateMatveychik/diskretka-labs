@@ -72,12 +72,13 @@ def findMVC_from_MIS(graph, MIS):
 def write_results_to_file(filename, graph, MIS, MVC):
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"вершины: {graph.n}\n")
-        edge_count = sum(len(neighbors) for neighbors in graph.graph) // 2
+        edge_count = sum(len(neigh) for neigh in graph.graph) // 2
         f.write(f"рёбра: {edge_count}\n")
         f.write(f"размер наибольшего независимого множества: {len(MIS)}\n")
         f.write(f"размер наименьшего вершинного покрытия: {len(MVC)}\n")
-        f.write(f"наибольшее независимое множество: {' '.join(map(str, sorted(MIS)))}\n")
-        f.write(f"наименьшее вершинное покрытие: {' '.join(map(str, sorted(MVC)))}\n")
+        f.write(f"наибольшее независимое множество: {MIS}\n")
+        f.write(f"наименьшее вершинное покрытие: {MVC}\n")
+
 
 if __name__ == "__main__":
     graph =  read_graph_from_file("input.txt")
