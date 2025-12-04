@@ -38,7 +38,7 @@ def floydWarshall(graph):
     # 1. Копируем матрицу весов в T
     T = [[graph.weights[i][j] for j in range(graph.n)] for i in range(graph.n)]
 
-    # 2. Инициализируем матрицу предшественников
+    # 2. Инициализируем матрицу путей
     P = [[0 if T[i][j] == float('inf') else i+1 for j in range(graph.n)] for i in range(graph.n)]
 
 
@@ -91,8 +91,8 @@ def writeResultsToFile(filename, graph, T, P):
         for row in T:
             f.write(" ".join(str(x) if x != float('inf') else 'inf' for x in row) + "\n")
 
-        # Матрица предшественников
-        f.write("\nМатрица предшественников (P):\n")
+        # Матрица путей
+        f.write("\nМатрица путей (P):\n")
         for row in P:
             f.write(" ".join(str(x) for x in row) + "\n")
 
