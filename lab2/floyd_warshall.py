@@ -49,17 +49,22 @@ def floydWarshall(graph):
     for rowP in P: print(*rowP)
 
     # 3. Основной цикл алгоритма
-    for k in range(n):  # промежуточная вершина
-        for i in range(n):  # начальная вершина
-            for j in range(n):  # конечная вершина
-                if T[i][k] + T[k][j] < T[i][j]:
-                    T[i][j] = T[i][k] + T[k][j]  # обновляем длину кратчайшего пути
-                    P[i][j] = P[k][j]
-
     for i in range(n):
-        if T[i][i] < 0:
-            print(f"Обнаружен отрицательный цикл, проходящий через вершину {i + 1}")
-            break
+        for j in range(n):
+            if i == j or T[j][i] == float('inf'):
+                continue
+            for k in range(n):
+                if i == k or T[i][k] == float('inf'):
+                    continue
+                if T[j][k] > T[j][i] + T[i][k]:
+                    T[j][k] = T[j][i] + T[i][k]
+                    P[j][k] = P[i][k]
+
+    # Проверка отрицательного цикла
+    for j in range(n):
+        if T[j][j] < 0:
+            print(f"Обнаружен отрицательный цикл через вершину {j + 1}")
+            return None, None
 
     return T,P
 
@@ -86,28 +91,44 @@ def writeResultsToFile(filename, graph, T, P):
     n = graph.n
 
     with open(filename, "w", encoding="utf-8") as f:
-        # Матрица кратчайших расстояний
-        f.write("Матрица кратчайших расстояний (T):\n")
-        for row in T:
-            f.write(" ".join(str(x) if x != float('inf') else 'inf' for x in row) + "\n")
+            # Матрица кратчайших расстояний
+            f.write("МАТРИЦА КРАТЧАЙШИХ РАССТОЯНИЙ:\n")
 
-        # Матрица путей
-        f.write("\nМатрица путей (P):\n")
-        for row in P:
-            f.write(" ".join(str(x) for x in row) + "\n")
+            for i in range(n):
+                for j in range(n):
+                    if T[i][j] == float('inf'):
+                        f.write(f"{'inf':>8}")
+                    else:
+                        f.write(f"{T[i][j]:8.2f}")
+                f.write("\n")
 
-        # Кратчайшие пути
-        f.write("\nКратчайшие пути:\n")
-        for i in range(n):
-            for j in range(n):
-                if i == j:
-                    continue
-                path = getPath(P, i + 1, j + 1)
-                if path is None:
-                    f.write(f"Путь из {i+1} в {j+1}: не существует\n")
-                else:
-                    path_str = " -> ".join(str(v) for v in path)
-                    f.write(f"Путь из {i+1} в {j+1}: {path_str}, расстояние: {T[i][j]}\n")
+            f.write("\n")
+
+            # Матрица путей (P)
+            f.write("МАТРИЦА ПУТЕЙ:\n")
+
+            for i in range(n):
+                for j in range(n):
+                    if P[i][j] == 0:
+                        f.write(f"{'0':>8}")
+                    else:
+                        f.write(f"{P[i][j]:8}")
+                f.write("\n")
+
+            f.write("\n")
+
+            # Кратчайшие пути
+            f.write("\nКРАТЧАЙШИЕ ПУТИ:\n")
+            for i in range(n):
+                for j in range(n):
+                    if i == j:
+                        continue
+                    path = getPath(P, i + 1, j + 1)
+                    if path is None:
+                        f.write(f"Путь из {i+1} в {j+1}: не существует\n")
+                    else:
+                        path_str = " -> ".join(str(v) for v in path)
+                        f.write(f"Путь из {i+1} в {j+1}: {path_str}, расстояние: {T[i][j]}\n")
 
 
 
@@ -121,10 +142,13 @@ def main():
 
     graph = readFromFile(input_file)
     T,P = floydWarshall(graph)
-    writeResultsToFile(output_file, graph, T, P)
-    print(f"Результаты записаны в {output_file}")
+
+    if T is not None and P is not None:
+        writeResultsToFile(output_file, graph, T, P)
+        print(f"Результаты записаны в {output_file}")
 
 
 
 if __name__ == "__main__":
     main()
+
