@@ -57,7 +57,13 @@ def Fano(b, e, k=0):
     """Рекурсивный алгоритм Фано"""
     global codes_dict, probabilities_list
 
-    if e <= b:
+    if e < b:
+        return
+
+    if e == b:
+        char = probabilities_list[b][0]
+        codes_dict[char] = "0"
+        print(f"Символу '{char}' присвоен код: {codes_dict[char]}")
         return
 
     current_k = k + 1
