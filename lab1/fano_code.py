@@ -170,20 +170,20 @@ def print_codes_table():
     print("-" * 60)
 
 
-def compare_with_ascii(original_text, encoded_file, codes_file):
+def compare_with_original(original_file, encoded_file, codes_file):
     """Сравнение файлов по байтам"""
-    if not original_text:
+    if not original_file:
         return
 
-    ascii_size = len(original_text)        # ASCII = 1 байт на символ
+    original_size = os.path.getsize(original_file)
     fano_size = os.path.getsize(encoded_file) + os.path.getsize(codes_file)
     fano_size_encoded = os.path.getsize(encoded_file)
 
-    saved = ascii_size - fano_size
-    eff = (saved / ascii_size) * 100 if ascii_size > 0 else 0
+    saved = original_size - fano_size
+    eff = (saved / original_size) * 100 if original_size > 0 else 0
 
     print("\n📊 СРАВНЕНИЕ (в байтах):")
-    print(f"Исходный файл: {ascii_size} Б")
+    print(f"Исходный файл: {original_size} Б")
     print(f"Фано (данные + коды): {fano_size} Б")
     print(f"Фано (коды): {fano_size_encoded} Б")
     print(f"Экономия: {saved} Б  ({eff:.1f}%)")
@@ -280,7 +280,7 @@ def main():
 
             write_binary_file(encoded_file, encoded)
             save_codes_to_file(codes_file)
-            compare_with_ascii(text, encoded_file, codes_file)
+            compare_with_original(filename, encoded_file, codes_file)
 
         elif choice == '2':
             bin_file = input("Введите .bin файл: ").strip()
