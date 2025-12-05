@@ -29,14 +29,14 @@ def read_graph_from_file(filename):
 
     return graph
 
-# функция подсчета компонент связности
+# функция подсчета компонент связности (с использованием поиска в ширину (BFS)
 def count_components(graph):
     visited = [False] * graph.n
     components = []
 
     for v in range(graph.n):
         if not visited[v]:
-            # здесь реализуем BFS прямо в функции
+            # здесь реализуем BFS 
             queue = deque([v])
             visited[v] = True
             comp_vertices = []
