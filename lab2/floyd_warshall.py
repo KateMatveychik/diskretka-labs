@@ -48,17 +48,17 @@ def floydWarshall(graph):
     print("\nНачальная матрица путей P:")
     for rowP in P: print(*rowP)
 
-    # 3. Основной цикл алгоритма
-    for i in range(n):
-        for j in range(n):
-            if i == j or T[j][i] == float('inf'):
-                continue
-            for k in range(n):
-                if i == k or T[i][k] == float('inf'):
-                    continue
-                if T[j][k] > T[j][i] + T[i][k]:
-                    T[j][k] = T[j][i] + T[i][k]
-                    P[j][k] = P[i][k]
+    # 3. Основной цикл алгоритма 
+    for k in range(n):                # промежуточная вершина k
+        for i in range(n):            # начальная вершина i
+            if k==i or T[i][k] == float('inf'):
+                continue             
+            for j in range(n):        # конечная вершина j
+                if k==j or i==j or T[k][j] == float('inf'):
+                    continue         
+                if T[i][j] > T[i][k] + T[k][j]:
+                    T[i][j] = T[i][k] + T[k][j]
+                    P[i][j] = P[k][j]   
 
     # Проверка отрицательного цикла
     for j in range(n):
