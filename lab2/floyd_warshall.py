@@ -54,7 +54,7 @@ def floydWarshall(graph):
             if k==i or T[i][k] == float('inf'):
                 continue             
             for j in range(n):        # конечная вершина j
-                if k==j or i==j or T[k][j] == float('inf'):
+                if k==j or T[k][j] == float('inf'):
                     continue         
                 if T[i][j] > T[i][k] + T[k][j]:
                     T[i][j] = T[i][k] + T[k][j]
